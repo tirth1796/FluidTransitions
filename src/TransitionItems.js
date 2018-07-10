@@ -1,7 +1,6 @@
 
 import { UIManager } from 'react-native';
 import TransitionItem from './TransitionItem';
-import _uniq from 'lodash/uniq'
 
 
 export default class TransitionItems {
@@ -62,7 +61,7 @@ export default class TransitionItems {
       .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
     const rightElements = this._getItemPairs(currRoute, rightRoute)
       .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
-    const sharedElements = _uniq([...leftElements, ...rightElements])
+    const sharedElements = [...leftElements, ...rightElements]
     return sharedElements;
   }
 

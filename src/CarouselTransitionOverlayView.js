@@ -9,7 +9,7 @@ import { NavigationDirection, TransitionContext, RouteDirection } from './Types'
 import * as Constants from './TransitionConstants';
 
 import { initTransitionTypes, getCarouselTransitionElements } from './CarouselTransitions';
-import { initInterpolatorTypes, getSharedElements, getAnchoredElements } from './Interpolators';
+import { initInterpolatorTypes, getSharedElements, getAnchoredElements } from './CarouselInterpolators';
 
 initTransitionTypes();
 initInterpolatorTypes();
@@ -35,7 +35,7 @@ const getDirectionRouteName = (routeName, {left, curr, right}) => {
     return RouteDirection.current;
   }
   return RouteDirection.unknown;
-}
+};
 
 class TransitionOverlayView extends React.Component<Props> {
   constructor(props: Props, context) {
@@ -78,7 +78,7 @@ class TransitionOverlayView extends React.Component<Props> {
     this._nativeInterpolation = null;
 
     const transitionViews = getCarouselTransitionElements(transitionElements, transitionContext, progressIndex, this.props.navigation);
-    const sharedElementViews = getSharedElements(this.props.sharedElements, this.getInterpolation, progressIndex, this.props.navigation);
+    const sharedElementViews = getSharedElements(this.props.sharedElements, this.getInterpolation, progressIndex, this.props.navigation, getTransitionProgress);
     const anchoredViews = getAnchoredElements(this.props.sharedElements, this.getInterpolation, progressIndex, this.props.navigation);
 
     let views = [...transitionViews, ...sharedElementViews, ...anchoredViews];
@@ -141,20 +141,20 @@ class TransitionOverlayView extends React.Component<Props> {
     return metricsReady;
   }
 
-  getInterpolation(useNativeDriver: boolean) {
+  getInterpolation(useNativeDriver: boolean, fullRange: boolean, indexToUse) {
     const { getTransitionProgress, getIndex } = this.context;
     if (!getTransitionProgress || !getIndex) return null;
 
-    const index = getIndex();    
+    const index = getIndex();
     const inputRange = [index - 1, index, index + 1];
-
+    const outputRange = [fullRange? -1:1, 0, 1];
     if (useNativeDriver && !this._nativeInterpolation) {
       this._nativeInterpolation = getTransitionProgress(true).interpolate({
-        inputRange, outputRange: [1, 0, 1],
+        inputRange, outputRange,
       });
     } else if (!useNativeDriver && !this._interpolation) {
       this._interpolation = getTransitionProgress(false).interpolate({
-        inputRange, outputRange: [1, 0, 1],
+        inputRange, outputRange,
       });
     }
 

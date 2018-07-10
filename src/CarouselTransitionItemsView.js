@@ -42,7 +42,7 @@ const getConsecutiveRoutes = (index = 0, routes = []) => {
   const leftRoute = _get(routes, `${index - 1}.routeName`);
   const currentRoute= _get(routes, `${index}.routeName`);
   const rightRoute  = _get(routes, `${index + 1}.routeName`);
-  return _compact([leftRoute,currentRoute,rightRoute]);
+  return [leftRoute,currentRoute,rightRoute];
 }
 
 

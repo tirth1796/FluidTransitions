@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Animated, findNodeHandle } from 'react-native';
 
 import TransitionItem from './TransitionItem';
-import { RouteDirection, NavigationDirection } from './Types';
 import * as Constants from './TransitionConstants';
-import { createAnimatedWrapper, createAnimated, getRotationFromStyle } from './Utils';
+import { createAnimatedWrapper, createAnimated } from './Utils';
 
 const uniqueBaseId: string = 'tcid';
 let uuidCount: number = 0;

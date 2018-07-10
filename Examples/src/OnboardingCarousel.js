@@ -68,7 +68,7 @@ const Screen1 = (props) => (
         <Circle background="#D46A6A" size={140} />
       </Transition>
       <View style={styles.circlesContainer}>
-        <Transition appear="vertical">
+        <Transition appear="horizontal" delay>
           <Circle background="#550000" size={40} />
         </Transition>
         <Transition appear="horizontal" delay>

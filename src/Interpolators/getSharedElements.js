@@ -11,32 +11,22 @@ import {
 } from './../Types';
 
 import { getInterpolatorTypes } from './InterpolatorTypes';
-import _findIndex from 'lodash/findIndex';
 
-const screenWidth = Dimensions.get('window').width;
-
-const getIndex = (item, navigation) => {
-  const routes = navigation.state.routes;
-  const index = _findIndex(routes, (route)=> route.routeName === item.route);
-  return index;
-}
-
-const getSharedElements = (sharedElements: Array<any>, getInterpolationFunction: Function, index, navigation) => {
+const getSharedElements = (sharedElements: Array<any>, getInterpolationFunction: Function) => {
   
   return sharedElements.map((pair, idx) => {
     const { fromItem, toItem } = pair;
     const element = React.Children.only(fromItem.reactElement.props.children);
-    const transitionStyles = getTransitionStyle(fromItem, toItem, getInterpolationFunction,index, navigation);
+    const transitionStyles = getTransitionStyle(fromItem, toItem, getInterpolationFunction);
 
     const key = `so-${idx.toString()}`;
     const animationStyle = transitionStyles.styles;
     const nativeAnimationStyle = [transitionStyles.nativeStyles];
-    const opacityStyles = getOpacityStyles(fromItem, toItem, getInterpolationFunction,index, navigation);
     const overrideStyles = {
       position: 'absolute',
       // borderColor: '#0000FF',
       // borderWidth: 1, 
-      left: fromItem.metrics.x  - getHorizontalOffset(fromItem, index, navigation),
+      left: fromItem.metrics.x,
       top: fromItem.metrics.y,
       width: fromItem.metrics.width,
       height: fromItem.metrics.height,
@@ -60,35 +50,18 @@ const getSharedElements = (sharedElements: Array<any>, getInterpolationFunction:
   });
 }
 
-const getHorizontalOffset = (item, index, navigation) => {
-  const offset = screenWidth * (getIndex(item, navigation) - index )
-  return offset;
-}
-
-const getOpacityStyles = (fromItem: TransitionItem, toItem: TransitionItem, getInterpolationFunction: Function,index, navigation) => {
-  const fromItemIndex = getIndex(fromItem, navigation)
-  const toItemIndex = getIndex(toItem, navigation)
-
-  const nativeInterpolator = getInterpolationFunction(true);
-  nativeInterpolator.interpolate({
-    inputRange: [-1, 0 ,1],
-    outputRange: [1,1,0]
-  })
-}
-
-
 const getTransitionStyle = (
-  fromItem: TransitionItem, toItem: TransitionItem, getInterpolationFunction: Function,index, navigation) => {
+  fromItem: TransitionItem, toItem: TransitionItem, getInterpolationFunction: Function) => {
   const interpolatorInfo: InterpolatorSpecification = {
     from: {
-      metrics: {...fromItem.metrics, x: fromItem.metrics.x  - getHorizontalOffset(fromItem, index, navigation)},
-      boundingbox: {...fromItem.boundingBoxMetrics, x: fromItem.boundingBoxMetrics.x  - getHorizontalOffset(fromItem, index, navigation)},
+      metrics: fromItem.metrics,
+      boundingbox: fromItem.boundingBoxMetrics,
       style: fromItem.getFlattenedStyle()
     },
     to: {
-      metrics: {...toItem.metrics, x: toItem.metrics.x  - getHorizontalOffset(toItem, index, navigation)},
+      metrics: toItem.metrics,
       style: toItem.getFlattenedStyle(),
-      boundingbox: {...toItem.boundingBoxMetrics, x: toItem.boundingBoxMetrics.x  - getHorizontalOffset(toItem, index, navigation)},
+      boundingbox: toItem.boundingBoxMetrics
     },
     scaleX: toItem.scaleRelativeTo(fromItem).x,
     scaleY: toItem.scaleRelativeTo(fromItem).y,
@@ -99,6 +72,7 @@ const getTransitionStyle = (
   const nativeStyles = [];
   const styles = [];
 
+  const self = this;
   getInterpolatorTypes().forEach(interpolator => {
     const interpolatorResult = interpolator.interpolatorFunction(interpolatorInfo);
     if (interpolatorResult) {

@@ -97,10 +97,7 @@ const getTransitionStyle = (item: TransitionItem, delayCount: number, delayIndex
       let start = Constants.TRANSITION_PROGRESS_START;
       let end = Constants.TRANSITION_PROGRESS_END;
 
-      let distance = routes.length > 1 ?
-        (1.0 - (Constants.TRANSITION_PROGRESS_START + (1.0 - Constants.TRANSITION_PROGRESS_END))) * 0.5 :
-        (1.0 - (Constants.TRANSITION_PROGRESS_START +
-          (1.0 - Constants.TRANSITION_PROGRESS_END)));
+      let distance = (1.0 - (Constants.TRANSITION_PROGRESS_START + (1.0 - Constants.TRANSITION_PROGRESS_END))) * 0.5;
 
       if (item.delay) {
         // Start/stop in delay window
