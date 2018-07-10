@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, Animated } from 'react-native';
 import { Transition, createFluidNavigator } from 'react-navigation-fluid-transitions';
+
+let firstColor = 'green';
 
 const styles = StyleSheet.create({
   container: {
@@ -39,6 +41,51 @@ const styles = StyleSheet.create({
   },
 });
 
+
+class TextWrapper extends React.Component {
+    render() {
+        if (this.props.progress) {
+            const opacity = this.props.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1],
+            });
+
+            const opacityReverse = this.props.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1],
+            });
+
+            const color = this.props.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [this.props.firstColor, this.props.lastColor],
+            });
+
+            const border = this.props.progress.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [0, 75, 0],
+            });
+
+            const scale = this.props.progress.interpolate({
+                inputRange: [0, 0.1, 0.9, 1],
+                outputRange: [1, 0.5, 0.5, 1],
+            });
+
+            return (
+                <View>
+                    <Animated.Text style={{color}}>{this.props.value}</Animated.Text>
+                    {/*<Animated.Text style={[{color: this.props.lastColor}, {opacity}]}>{this.props.value}</Animated.Text>*/}
+                </View>
+
+            );
+        }
+
+        return (
+            <Text style={{color: this.props.firstColor}}>{this.props.value}</Text>
+        );
+    }
+}
+
+
 const Circle = (props) => (
   <View
     style={{
@@ -65,8 +112,8 @@ const Shape = (props) => (
 
 const Screen1 = (props) => (
   <View style={styles.container}>
-    <Transition appear="flip">
-      <Text>1.Screen</Text>
+    <Transition shared="text" animated="progress" >
+        <TextWrapper value={'Screen1'} style={{color: 'green'}} firstColor={'green'} lastColor={'blue'}/>
     </Transition>
     <View style={styles.screen1}>
       <Transition shared="circle">
@@ -96,8 +143,8 @@ const Screen1 = (props) => (
 
 const Screen2 = (props) => (
   <View style={styles.container}>
-    <Transition appear="flip">
-      <Text>2.Screen</Text>
+    <Transition shared="text" animated="progress" >
+        <TextWrapper value={'Screen2'} firstColor={'blue'} lastColor={'red'}/>
     </Transition>
     <View style={styles.screen2}>
       <Transition shared="circle">
@@ -129,8 +176,8 @@ const Screen2 = (props) => (
 
 const Screen3 = (props) => (
   <View style={styles.container}>
-    <Transition appear="flip">
-      <Text>3.Screen</Text>
+    <Transition shared="text" animated="progress" >
+        <TextWrapper value={'Screen1'} style={{color: 'black'}} firstColor={'red'} lastColor={'black'}/>
     </Transition>
     <View style={styles.screen3}>
       <Transition shared="circle">

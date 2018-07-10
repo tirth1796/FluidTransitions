@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, View, Animated, Button } from 'react-native';
-import { createFluidNavigator, Transition } from 'react-navigation-fluid-transitions';
+import { createFluidTabNavigator, createFluidNavigator, Transition } from 'react-navigation-fluid-transitions';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,8 +32,8 @@ class SpinningCube extends Component {
   render() {
     if (this.props.progress) {
       const spin = this.props.progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['0deg', '180deg'],
+        inputRange: [ -1, 0, 1],
+        outputRange: ['180deg', '0deg', '180deg'],
       });
 
       const background = this.props.progress.interpolate({
@@ -129,7 +129,7 @@ class Screen3 extends Component {
       <View style={styles.container}>
         <Description />
         <Transition animated="progress" shared="square">
-          <SpinningCube startColor="#0000FF" endColor="#FF0" />
+          <SpinningCube prevColor={'#00FF00'} startColor="#0000FF" endColor="#FF0" />
         </Transition>
         <Transition appear="horizontal">
           <View style={styles.buttonContainer}>
@@ -141,10 +141,13 @@ class Screen3 extends Component {
   }
 }
 
-const Navigator = createFluidNavigator({
+const Navigator = createFluidTabNavigator({
   screen1: { screen: Screen1 },
   screen2: { screen: Screen2 },
   screen3: { screen: Screen3 },
+}, {
+    gesturesEnabled: true,
+  mode: 'card'
 });
 
 class AnimatedProperty extends React.Component {

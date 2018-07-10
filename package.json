@@ -52,8 +52,6 @@
     "minimatch": "^3.0.2",
     "node-watch": "^0.4.0",
     "prop-types": "^15.6.0",
-    "react": "16.2.0",
-    "react-native": "0.53.3",
     "react-test-renderer": "16.2.0",
     "rimraf": "^2.5.4"
   },

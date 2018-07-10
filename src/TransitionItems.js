@@ -1,6 +1,8 @@
 
 import { UIManager } from 'react-native';
 import TransitionItem from './TransitionItem';
+import _uniq from 'lodash/uniq'
+
 
 export default class TransitionItems {
   constructor() {
@@ -55,6 +57,14 @@ export default class TransitionItems {
     return this._getItemPairs(fromRoute, toRoute)
       .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
   }
+  getSharedElementsCarousel(leftRoute: string, currRoute: string, rightRoute: string): Array<TransitionItem> {
+    const leftElements = this._getItemPairs(leftRoute, currRoute)
+      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
+    const rightElements = this._getItemPairs(currRoute, rightRoute)
+      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
+    const sharedElements = _uniq([...leftElements, ...rightElements])
+    return sharedElements;
+  }
 
   getTransitionElements(fromRoute: string, toRoute: string): Array<TransitionItem> {
     const itemPairs = this._getItemPairs(fromRoute, toRoute)
@@ -66,6 +76,20 @@ export default class TransitionItems {
     items = items.filter(e => itemPairs.findIndex(p =>
       (e.name === p.fromItem.name && e.route === p.fromItem.route) ||
       (e.name === p.toItem.name && e.route === p.toItem.route)) === -1);
+
+    return items;
+  }
+  getTransitionElementsCarousel(routes = []): Array<TransitionItem> {
+    let items = this._items.filter(item => {
+      let itemInRoutes = false;
+      routes.forEach(route => {
+        if(item.route === route){
+          itemInRoutes = true;
+        }
+      });
+      return (item.appear !== undefined || item.disappear !== undefined) && itemInRoutes
+    });
+
 
     return items;
   }

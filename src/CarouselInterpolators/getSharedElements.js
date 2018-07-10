@@ -31,7 +31,6 @@ const getSharedElements = (sharedElements: Array<any>, getInterpolationFunction:
     const key = `so-${idx.toString()}`;
     const animationStyle = transitionStyles.styles;
     const nativeAnimationStyle = [transitionStyles.nativeStyles];
-    const opacityStyles = getOpacityStyles(fromItem, toItem, getInterpolationFunction,index, navigation);
     const overrideStyles = {
       position: 'absolute',
       // borderColor: '#0000FF',
@@ -64,18 +63,6 @@ const getHorizontalOffset = (item, index, navigation) => {
   const offset = screenWidth * (getIndex(item, navigation) - index )
   return offset;
 }
-
-const getOpacityStyles = (fromItem: TransitionItem, toItem: TransitionItem, getInterpolationFunction: Function,index, navigation) => {
-  const fromItemIndex = getIndex(fromItem, navigation)
-  const toItemIndex = getIndex(toItem, navigation)
-
-  const nativeInterpolator = getInterpolationFunction(true);
-  nativeInterpolator.interpolate({
-    inputRange: [-1, 0 ,1],
-    outputRange: [1,1,0]
-  })
-}
-
 
 const getTransitionStyle = (
   fromItem: TransitionItem, toItem: TransitionItem, getInterpolationFunction: Function,index, navigation) => {

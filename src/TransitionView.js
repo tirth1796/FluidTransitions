@@ -119,8 +119,8 @@ class Transition extends React.Component<TransitionProps> {
     const index = getIndex();
     if (!progress || index === undefined) return { };
 
-    const inputRange = [index - 1, (index-1) + Constants.OP, index - Constants.OP, index];
-    const outputRange = [1, 0, 0, 1];
+    const inputRange = [index - 1, (index-1) + Constants.OP, index - Constants.OP, index,index + Constants.OP, index + 1 - Constants.OP, index+1];
+    const outputRange = [1, 0, 0, 1, 0 , 0, 1];
     
     const isPartOfSharedTransition = getIsPartOfSharedTransition(this._getName(), this._route);        
     const isPartOfTransition = getIsPartOfTransition(this._getName(), this._route);
@@ -136,9 +136,9 @@ class Transition extends React.Component<TransitionProps> {
 
 const styles = StyleSheet.create({
   transition: {
-    // backgroundColor: '#0000EF22',
-    // borderColor: '#FF0000',
-    // borderWidth: 1,
+    backgroundColor: '#0000EF22',
+    borderColor: '#FF0000',
+    borderWidth: 1,
   },
 });
 
