@@ -244,31 +244,16 @@ class FluidTransitioner extends React.Component<*> {
   }
 
   getPanResponderHandlers(position, index, scene, layout, navigation, props) {
-    const { mode } = this.props;
+    const { mode = 'card' } = this.props;
     const isVertical = mode !== 'card';
     const { options } = scene.descriptor;
     const gestureDirectionInverted = options.gestureDirection === 'inverted';
-    const gesturesEnabled =
-      typeof options.gesturesEnabled === 'boolean'
-        ? options.gesturesEnabled
-        : Platform.OS === 'ios';
-
-    // https://github.com/facebook/react-native/issues/8624
-    // https://github.com/react-navigation/react-navigation/issues/4144
     if(this._panResponder) {
       const handle = this._panResponder.getInteractionHandle();
       if(handle)
         InteractionManager.clearInteractionHandle(handle);
     }
-
-    if (!gesturesEnabled) {
-      return {};
-    }
-
-    this._panResponder = !gesturesEnabled
-
-      ? null
-      : PanResponder.create({
+    this._panResponder = PanResponder.create({
         onPanResponderTerminate: () => {
           this._isResponding = false;
           this._reset(position, index, 0);
@@ -354,8 +339,7 @@ class FluidTransitioner extends React.Component<*> {
           });
         },
       });
-    const handlers = gesturesEnabled ? this._panResponder.panHandlers : {};
-    return handlers;
+    return this._panResponder.panHandlers;
   }
 
   _renderScene(transitionProps) {

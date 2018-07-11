@@ -131,7 +131,7 @@ class Screen3 extends Component {
         <Transition animated="progress" shared="square">
           <SpinningCube prevColor={'#00FF00'} startColor="#0000FF" endColor="#FF0" />
         </Transition>
-        <Transition appear="horizontal">
+        <Transition>
           <View style={styles.buttonContainer}>
             <Button title="Back" onPress={() => this.props.navigation.goBack()} />
           </View>
