@@ -5,6 +5,7 @@ import { NavigationActions, Transitioner } from 'react-navigation';
 import clamp from 'clamp';
 
 import _isEqual from 'lodash/isEqual';
+import _get from 'lodash/get';
 
 import CarouselTransitionItemsView from "./CarouselTransitionItemsView";
 import TransitionRouteView from './TransitionRouteView';
@@ -244,8 +245,19 @@ class FluidTransitioner extends React.Component<*> {
   }
 
   getPanResponderHandlers(position, index, scene, layout, navigation, props) {
-    const { mode = 'card' } = this.props;
-    const isVertical = mode !== 'card';
+    const { mode, transitionerProps } = this.props;
+    const bounceResistance = _get(transitionerProps, 'bounceResistance', 0.5);
+    let bounceMultiplierLeft = 1;
+    let bounceMultiplierRight = 1;
+    if(index === 0 ){
+      bounceMultiplierLeft = 1 - bounceResistance;
+    }
+    if(index === this.props.navigation.state.routes.length - 1) {
+      bounceMultiplierRight = 1 - bounceResistance;
+    }
+    const clampValueLeft = index - bounceMultiplierLeft;
+    const clampValueRight = index + bounceMultiplierRight;
+    const isVertical = mode === 'vertical';
     const { options } = scene.descriptor;
     const gestureDirectionInverted = options.gestureDirection === 'inverted';
     if(this._panResponder) {
@@ -290,10 +302,16 @@ class FluidTransitioner extends React.Component<*> {
           const axisDistance = isVertical
             ? layout.height.__getValue() * 0.75
             : layout.width.__getValue();
+          let offset = gesture[axis] / axisDistance;
+          if(offset > 0){
+            offset *= bounceMultiplierLeft;
+          } else {
+            offset *= bounceMultiplierRight;
+          }
           const currentValue = (I18nManager.isRTL && axis === 'dx') !== gestureDirectionInverted
-            ? startValue + gesture[axis] / axisDistance
-            : startValue - gesture[axis] / axisDistance;
-          const value = clamp(index-1, currentValue, index+1);
+            ? startValue + offset
+            : startValue - offset;
+          const value = clamp(clampValueLeft, currentValue, clampValueRight);
           position.setValue(value);
         },
         onPanResponderTerminationRequest: () => false,

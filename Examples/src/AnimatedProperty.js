@@ -146,8 +146,7 @@ const Navigator = createFluidTabNavigator({
   screen2: { screen: Screen2 },
   screen3: { screen: Screen3 },
 }, {
-    gesturesEnabled: true,
-  mode: 'card'
+  bounceResistance: 1
 });
 
 class AnimatedProperty extends React.Component {
