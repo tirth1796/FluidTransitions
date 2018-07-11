@@ -54,7 +54,7 @@ class Transition extends React.Component<TransitionProps> {
       register(new TransitionItem(
         this._getName(), this.context.route,
         this, this.props.shared !== undefined, this.props.appear,
-        this.props.disappear, this.props.delay !== undefined,
+        this.props.disappear, this.props.delay === undefined?false : this.props.delay,
         zIndex++, this.props.anchor, this.props.animated
       ));
     }
@@ -135,9 +135,9 @@ class Transition extends React.Component<TransitionProps> {
 
 const styles = StyleSheet.create({
   transition: {
-    backgroundColor: '#0000EF22',
-    borderColor: '#FF0000',
-    borderWidth: 1,
+    // backgroundColor: '#0000EF22',
+    // borderColor: '#FF0000',
+    // borderWidth: 1,
   },
 });
 

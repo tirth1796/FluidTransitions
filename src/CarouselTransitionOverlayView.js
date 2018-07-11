@@ -145,7 +145,7 @@ class TransitionOverlayView extends React.Component<Props> {
     const { getTransitionProgress, getIndex } = this.context;
     if (!getTransitionProgress || !getIndex) return null;
 
-    const index = getIndex();
+    const index = indexToUse!==undefined?indexToUse : getIndex();
     const inputRange = [index - 1, index, index + 1];
     const outputRange = [fullRange? -1:1, 0, 1];
     if (useNativeDriver && !this._nativeInterpolation) {
@@ -193,9 +193,9 @@ class TransitionOverlayView extends React.Component<Props> {
       .reduce((prevValue, item) => (item.delay ? prevValue + 1 : prevValue), 0);
     const navDirection = getDirection();
     let delayIndexFrom = 0;
-    let delayIndexTo = Math.max(0, delayCountTo - 1);
+    let delayIndexTo = 0;
     const delayFromFactor = 1;
-    const delayToFactor = -1;
+    const delayToFactor = 1;
     const getDirectionForRouteName = (routeName) => getDirectionRouteName(routeName, {left:leftRoute, right: rightRoute, curr: currentRoute});
     return {
       delayCountLeft,

@@ -4,13 +4,15 @@ import { StyleSheet, Platform, Easing, I18nManager, Animated, Dimensions, PanRes
 import { NavigationActions, Transitioner } from 'react-navigation';
 import clamp from 'clamp';
 
+import _isEqual from 'lodash/isEqual';
+
 import CarouselTransitionItemsView from "./CarouselTransitionItemsView";
 import TransitionRouteView from './TransitionRouteView';
 
 const emptyFunction = () => {};
 
 const ANIMATION_DURATION = 500;
-const POSITION_THRESHOLD = 1 / 3;
+const POSITION_THRESHOLD = 0.4;
 const RESPOND_THRESHOLD = 20;
 
 const screenWidth = Dimensions.get('window').width
@@ -32,15 +34,17 @@ class FluidTransitioner extends React.Component<*> {
     this._scenesReadyPromise = new Promise(resolve =>
       this._scenesReadyResolveFunc = resolve);
   }
-
+  _animations = [];
   _scenes: Array<SceneRenderedInfo> = [];
   _scenesReadyResolveFunc: ?Function;
   _scenesReadyPromise: ?Promise<void>;
   _layoutsReady: boolean;
   _gestureStartValue = 0;
   _isResponding = false;
-  _immediateIndex = null;
   _panResponder = null;
+
+  oldProps = {};
+  transitioner = null;
 
   static childContextTypes = {
     route: PropTypes.string,
@@ -136,12 +140,14 @@ class FluidTransitioner extends React.Component<*> {
   }
 
   _reset(position, resetToIndex, duration) {
-    Animated.timing(position, {
+    const animation = Animated.timing(position, {
       toValue: resetToIndex,
       duration,
       easing: Easing.EaseInOut,
       useNativeDriver: position.__isNative,
-    }).start();
+    });
+    animation.start()
+    this._animations.push(animation);
   }
 
   _goBack(navigation, position, scenes, backFromIndex, duration, resetConfig) {
@@ -152,24 +158,23 @@ class FluidTransitioner extends React.Component<*> {
 
     const toValue = this.props.navigation.state.index - 1;
 
-    // set temporary index for gesture handler to respect until the action is
-    // dispatched at the end of the transition.
-    this._immediateIndex = toValue;
-
-    Animated.timing(position, {
+    const animation = Animated.timing(position, {
       toValue,
       duration,
       easing: Easing.EaseInOut,
       useNativeDriver: position.__isNative,
-    }).start(() => {
-      this._immediateIndex = null;
-      const backFromScene = scenes.find(s => s.index === (toValue));
-      if (!this._isResponding && backFromScene) {
-        this.props.navigation.navigate(
-          this.props.navigation.state.routes[toValue].routeName,
-        )
+    });
+    animation.start(({finished}) => {
+      if(finished){
+        const backFromScene = scenes.find(s => s.index === (toValue));
+        if (!this._isResponding && backFromScene) {
+          this.props.navigation.navigate(
+            this.props.navigation.state.routes[toValue].routeName,
+          )
+        }
       }
     });
+    this._animations.push(animation);
   }
 
   _goNext(navigation, position, scenes, backFromIndex, duration, resetConfig) {
@@ -179,29 +184,31 @@ class FluidTransitioner extends React.Component<*> {
     }
     const toValue = this.props.navigation.state.index + 1;
 
-    // set temporary index for gesture handler to respect until the action is
-    // dispatched at the end of the transition.
-    this._immediateIndex = toValue;
-
-    Animated.timing(position, {
+    const animation = Animated.timing(position, {
       toValue,
       duration,
       easing: Easing.EaseInOut,
       useNativeDriver: position.__isNative,
-    }).start(() => {
-      this._immediateIndex = null;
-      const nextScenePresent = scenes.find(s => s.index === toValue);
-      if (!this._isResponding && nextScenePresent) {
-        this.props.navigation.navigate(
-          this.props.navigation.state.routes[toValue].routeName,
-        )
+    })
+    animation.start(({finished}) => {
+      if(finished){
+        const nextScenePresent = scenes.find(s => s.index === toValue);
+        if (!this._isResponding && nextScenePresent) {
+          this.props.navigation.navigate(
+            this.props.navigation.state.routes[toValue].routeName,
+          )
+        }
       }
     });
+    this._animations.push(animation);
   }
 
-  _render(props, prevProps) {
+  _render(props) {
+    if(_isEqual(props, this.oldProps)){
+      return this.transitioner;
+    }
+    this.oldProps = props;
     this._layoutsReady = false;
-
     const { position } = props;
     const { scene, layout } = props;
     const { navigation } = scene.descriptor;
@@ -209,40 +216,30 @@ class FluidTransitioner extends React.Component<*> {
     this._animatedSubscribeForNativeAnimation(props.position);
     this._updateSceneArray(props.scenes);
 
-    let toRoute = props.scene.route.routeName;
-    let fromRoute = prevProps ? prevProps.scene.route.routeName : null;
     let { index } = props.scene;
+    let toRoute = props.scene.route.routeName;
+    let fromRoute = index > 0 ? props.scenes[index-1].route.routeName : null;
 
-    if(!fromRoute) {
-      fromRoute = index > 0 ? props.scenes[index-1].route.routeName : null;
-    }
-
-    // If we are just returning to the previous page keep the same props
-    if(prevProps && index < prevProps.index && fromRoute === prevProps.scene.route.routeName){
-      index = prevProps.index;
-      const tmp = fromRoute;
-      fromRoute = toRoute;
-      toRoute = tmp;
-    }
 
     const handlers = this.getPanResponderHandlers(position, index,
       scene, layout, navigation, props);
 
     const scenes = props.scenes.map(scene => this._renderScene({ ...props, scene }));
 
+    this.transitioner = (<CarouselTransitionItemsView
+      {...handlers}
+      navigation={this.props.navigation}
+      style={this.props.style}
+      progress={props.position}
+      fromRoute={fromRoute}
+      toRoute={toRoute}
+      index={index}
+      onLayout={this._transitionItemsViewOnLayout}
+    >
+      {scenes}
+    </CarouselTransitionItemsView>)
     return (
-      <CarouselTransitionItemsView
-        {...handlers}
-        navigation={this.props.navigation}
-        style={this.props.style}
-        progress={props.position}
-        fromRoute={fromRoute}
-        toRoute={toRoute}
-        index={index}
-        onLayout={this._transitionItemsViewOnLayout}
-      >
-        {scenes}
-      </CarouselTransitionItemsView>
+      this.transitioner
     );
   }
 
@@ -280,43 +277,29 @@ class FluidTransitioner extends React.Component<*> {
           position.stopAnimation(value => {
             this._isResponding = true;
             this._gestureStartValue = value;
+            this._animations.forEach((animation)=>{
+              animation.stop();
+            });
+            this._animations = [];
           });
         },
         onMoveShouldSetPanResponder: (event, gesture) => {
+          if(!this._layoutsReady){
+            return false;
+          }
           if (index !== scene.index) {
             return false;
           }
-          const immediateIndex = this._immediateIndex == null ? index : this._immediateIndex;
           const currentDragDistance = gesture[isVertical ? 'dy' : 'dx'];
-          const currentDragPosition = event.nativeEvent[isVertical ? 'pageY' : 'pageX'];
           const axisLength = isVertical
             ? layout.height.__getValue()
             : layout.width.__getValue();
           const axisHasBeenMeasured = !!axisLength;
-          // Measure the distance from the touch to the edge of the screen
-          // const screenEdgeDistance = gestureDirectionInverted
-          //   ? axisLength - (currentDragPosition - currentDragDistance)
-          //   : currentDragPosition - currentDragDistance;
-          // // Compare to the gesture distance relavant to card or modal
-          // const {
-          //   gestureResponseDistance: userGestureResponseDistance = {},
-          // } = this._getScreenDetails(scene).options;
-          // const gestureResponseDistance = isVertical
-          //   ? userGestureResponseDistance.vertical ||
-          //     GESTURE_RESPONSE_DISTANCE_VERTICAL
-          //   : userGestureResponseDistance.horizontal ||
-          //     GESTURE_RESPONSE_DISTANCE_HORIZONTAL;
-          // // GESTURE_RESPONSE_DISTANCE is about 25 or 30. Or 135 for modals
-          // if (screenEdgeDistance > gestureResponseDistance) {
-          //   // Reject touches that started in the middle of the screen
-          //   return false;
-          // }
           const hasDraggedEnough = Math.abs(currentDragDistance) > RESPOND_THRESHOLD;
           const shouldSetResponder = hasDraggedEnough && axisHasBeenMeasured;
           return shouldSetResponder;
         },
         onPanResponderMove: (event, gesture) => {
-          // Handle the moving touches for our granted responder
           const startValue = this._gestureStartValue;
           const axis = isVertical ? 'dy' : 'dx';
           const axisDistance = isVertical
@@ -328,54 +311,45 @@ class FluidTransitioner extends React.Component<*> {
           const value = clamp(index-1, currentValue, index+1);
           position.setValue(value);
         },
-        onPanResponderTerminationRequest: () =>
-          // Returning false will prevent other views from becoming responder while
-          // the navigation view is the responder (mid-gesture)
-          false,
+        onPanResponderTerminationRequest: () => false,
         onPanResponderRelease: (event, gesture) => {
           if (!this._isResponding) {
             return;
           }
           this._isResponding = false;
-          const immediateIndex = this._immediateIndex == null ? index : this._immediateIndex;
-          // Calculate animate duration according to gesture speed and moved distance
-          const axisDistance = isVertical
-            ? layout.height.__getValue()
-            : layout.width.__getValue();
+          const axisDistance = isVertical ? layout.height.__getValue() : layout.width.__getValue();
           const movementDirection = gestureDirectionInverted ? -1 : 1;
           const movedDistance = Math.abs(movementDirection * gesture[isVertical ? 'dy' : 'dx']);
           const gestureVelocity = movementDirection * gesture[isVertical ? 'vy' : 'vx'];
           const defaultVelocity = axisDistance / ANIMATION_DURATION;
+
           const velocity = Math.max(Math.abs(gestureVelocity), defaultVelocity);
-          const resetDuration = gestureDirectionInverted
-            ? (axisDistance - movedDistance) / velocity
-            : movedDistance / velocity;
-          const goBackDuration = gestureDirectionInverted
-            ? movedDistance / velocity
-            : (axisDistance - movedDistance) / velocity;
-          const goNextDuration = gestureDirectionInverted
-            ? -movedDistance / velocity
-            : (axisDistance + movedDistance) / velocity;
+
+          const resetDuration = gestureDirectionInverted ? (axisDistance - movedDistance) / velocity : movedDistance / velocity;
+
+          const goBackDuration = gestureDirectionInverted ? movedDistance / velocity : (axisDistance - movedDistance) / velocity;
+
+          const goNextDuration = gestureDirectionInverted ? -movedDistance / velocity : (axisDistance + movedDistance) / velocity;
           position.stopAnimation(value => {
             if (gestureVelocity > 0.5) {
-              this._goBack(navigation, position, props.scenes, immediateIndex, goBackDuration, [position, immediateIndex, resetDuration]);
+              this._goBack(navigation, position, props.scenes, index, goBackDuration, [position, index, resetDuration]);
 
               return;
             }
             if (gestureVelocity < -0.5) {
-              this._goNext(navigation, position, props.scenes, immediateIndex, goNextDuration, [position, immediateIndex, resetDuration]);
+              this._goNext(navigation, position, props.scenes, index, goNextDuration, [position, index, resetDuration]);
 
               return;
             }
             if (value <= index-POSITION_THRESHOLD) {
-              this._goBack(navigation, position, props.scenes, immediateIndex, goBackDuration, [position, immediateIndex, resetDuration]);
+              this._goBack(navigation, position, props.scenes, index, goBackDuration, [position, index, resetDuration]);
               return;
             }
             if (value >= index+POSITION_THRESHOLD) {
-              this._goNext(navigation, position, props.scenes, immediateIndex, goNextDuration, [position, immediateIndex, resetDuration]);
+              this._goNext(navigation, position, props.scenes, index, goNextDuration, [position, index, resetDuration]);
               return;
             }
-            this._reset(position, immediateIndex, resetDuration);
+            this._reset(position, index, resetDuration);
 
           });
         },

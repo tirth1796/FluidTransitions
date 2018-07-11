@@ -43,11 +43,11 @@ const getSharedElements = (sharedElements: Array<any>, getInterpolationFunction:
       height: fromItem.metrics.height,
       opacity,
     };
-    let progress = getInterpolationFunction(false);
+    let progress = getInterpolationFunction(false, false, index>=0?index:0);
     if(index === getIndex(toItem, navigation)){
       progress = progress.interpolate({
-        inputRange: [0,1],
-        outputRange: [1,0]
+        inputRange: [0, 1],
+        outputRange: [1, 0]
       })
     }
     const props = { ...element.props, __index: fromItem.index };

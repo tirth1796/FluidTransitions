@@ -84,36 +84,25 @@ const getPositionStyle = (item: TransitionItem, delayCount: number, delayIndex: 
 }
 
 const getTransitionStyle = (item: TransitionItem, delayCount: number, delayIndex: number, transitionContext: TransitionContext, currentIndex, navigation) => {
-  const index = transitionContext.getIndex();
+  // const index = transitionContext.getIndex();
   const progress = transitionContext.getTransitionProgress();
   const routeDirection = transitionContext.getDirectionForRoute(item.name, item.route);
 
-  const routes = transitionContext.getRoutes();
-  const xDirection = currentIndex === index ? RouteDirection.current : (index < currentIndex ? RouteDirection.right: RouteDirection.left);
+  // const routes = transitionContext.getRoutes();
+  // const xDirection = currentIndex === index ? RouteDirection.current : (index < currentIndex ? RouteDirection.right: RouteDirection.left);
   if (progress) {
-    const transitionFunction = getTransitionFunction(item, routeDirection);
+    const transitionFunction = getTransitionFunction(item);
     if (transitionFunction) {
-      // Calculate start/end to handle delayed transitions
       let start = Constants.TRANSITION_PROGRESS_START;
       let end = Constants.TRANSITION_PROGRESS_END;
 
-      let distance = (1.0 - (Constants.TRANSITION_PROGRESS_START + (1.0 - Constants.TRANSITION_PROGRESS_END))) * 0.5;
+      let distance = 0.5;
 
-      if (item.delay) {
-        // Start/stop in delay window
+      if(typeof item.delay === 'number' && item.delay>0 && item.delay<1){
+        start=item.delay;
+      } else if (item.delay) {
         const delayStep = distance / delayCount;
-        if (routeDirection === RouteDirection.from) {
-          start += (delayStep * delayIndex);
-        } else {
-          end -= (delayStep * delayIndex);
-        }
-      } else if (routes.length > 1) {
-        // Start/stop first/last half of transition
-        // if (routeDirection === RouteDirection.to) {
-        //   start += distance;
-        // } else {
-        //   end -= distance;
-        // }
+        start += (delayStep * delayIndex);
       }
 
       const xIndex = getIndex(item, navigation);
@@ -137,20 +126,16 @@ const getTransitionStyle = (item: TransitionItem, delayCount: number, delayIndex
       return transitionFunction(transitionSpecification);
     }
   }
-  return { };
+  return {};
 }
 
-const getTransitionFunction = (item: TransitionItem, routeDirection: RouteDirection) => {
+const getTransitionFunction = (item: TransitionItem) => {
   const getTransition = (transition: string | Function) => {
     if (transition instanceof Function) { return transition; }
     return getTransitionType(transition);
   };
 
-  if (routeDirection === RouteDirection.to && item.appear) {
-    return getTransition(item.appear);
-  } else if (routeDirection === RouteDirection.from && item.disappear) {
-    return getTransition(item.disappear);
-  } else if (item.appear) {
+  if (item.appear) {
     return getTransition(item.appear);
   }
   return null;
