@@ -62,35 +62,28 @@ class TransitionOverlayView extends React.Component<Props> {
     const transitionElements = this.props.transitionElements ? this.props.transitionElements
       .filter(i => i.route === currentRoute || i.route === leftRoute || i.route === rightRoute) : [];
 
-    const sharedElements = this.props.sharedElements ?
-      this.props.sharedElements.filter(p => (
-        (p.fromItem.route === from || p.fromItem.route === to) && (p.toItem.route === from || p.toItem.route === to)
-        )
-      ) : [];
-      
     const transitionContext = this.getTransitionContext(transitionElements);
     if (!transitionContext || !this.getMetricsReady() ||
-      (sharedElements.length === 0 && transitionElements.length === 0)) {
+      ((this.props.sharedElements || []).length === 0 && transitionElements.length === 0)) {
       return <View style={styles.overlay} pointerEvents="none" />;
     }
-    
+
     this._interpolation = null;
     this._nativeInterpolation = null;
 
     const transitionViews = getCarouselTransitionElements(transitionElements, transitionContext, progressIndex, this.props.navigation);
     const sharedElementViews = getSharedElements(this.props.sharedElements, this.getInterpolation, progressIndex, this.props.navigation, getTransitionProgress);
-    const anchoredViews = getAnchoredElements(this.props.sharedElements, this.getInterpolation, progressIndex, this.props.navigation);
 
-    let views = [...transitionViews, ...sharedElementViews, ...anchoredViews];
-    views = sortBy(views, 'props.index');    
-    
+    let views = [...transitionViews, ...sharedElementViews];
+    views = sortBy(views, 'props.index');
+
     return (
       <Animated.View style={[styles.overlay, this.getVisibilityStyle()]} pointerEvents="none">
         {views}
       </Animated.View>
     );
   }
-  
+
   getVisibilityStyle() {const { getTransitionProgress } = this.context;
     const { index } = this.props;
 
@@ -101,7 +94,7 @@ class TransitionOverlayView extends React.Component<Props> {
     const inputRange = [index - 1, (index-1) + Constants.OP, (index) - Constants.OP, index, index+Constants.OP, (index+1) - Constants.OP, index+1];
     const outputRange = [0, 1, 1, 0, 1, 1, 0];
     const visibility = progress.interpolate({ inputRange, outputRange });
-    
+
     return { opacity: visibility };
   }
 
@@ -109,15 +102,15 @@ class TransitionOverlayView extends React.Component<Props> {
     let metricsReady = true;
     if (this.props.transitionElements) {
       this.props.transitionElements.forEach(item => {
-        if (!item.metrics) { 
-          metricsReady = false; 
+        if (!item.metrics) {
+          metricsReady = false;
         }
       });
     }
 
     if (this.props.sharedElements) {
       this.props.sharedElements.forEach(pair => {
-        if (!pair.toItem.metrics || !pair.fromItem.metrics) { 
+        if (!pair.toItem.metrics || !pair.fromItem.metrics) {
           metricsReady = false;
         }
         if(pair.fromItem && pair.fromItem.anchors) {
@@ -240,7 +233,7 @@ class TransitionOverlayView extends React.Component<Props> {
 
 const styles: StyleSheet.NamedStyles = StyleSheet.create({
   overlay: {
-    position: 'absolute', 
+    position: 'absolute',
     // backgroundColor: '#FF00AE11',
     top: 0,
     left: 0,

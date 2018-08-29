@@ -34,11 +34,8 @@ const ItemButton = (props) => (
 
 export default (props) => (
   <ScrollView contentContainerStyle={styles.container}>
-    <ItemButton color="#C62828" icon="smartphone" text="Onboarding Transitions" nav={props.navigation} target="onboardingC" />
-    <ItemButton color="#C62828" icon="smartphone" text="Onboarding Transitions" nav={props.navigation} target="onboarding" />
-
-    <ItemButton color="#D32F2F" icon="shopping-cart" text="Shoe Shopping" nav={props.navigation} target="shoes" />
-    <ItemButton color="#E53935" icon="list" text="FlatList" nav={props.navigation} target="flatlist" />
-    <ItemButton color="#F44336" icon="film" text="Animated Property" nav={props.navigation} target="animatedProperty" />
+    <ItemButton color="#C62828" icon="smartphone" text="Onboarding Transitions Carousel" nav={props.navigation} target="onboardingC" />
+    <ItemButton color="#C62828" icon="smartphone" text="Onboarding Transitions Fluid" nav={props.navigation} target="onboarding" />
+    <ItemButton color="#F44336" icon="film" text="Shared Carousel Transition" nav={props.navigation} target="animatedProperty" />
   </ScrollView>
 );

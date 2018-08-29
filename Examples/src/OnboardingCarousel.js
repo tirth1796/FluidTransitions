@@ -61,10 +61,20 @@ const Square = (props) => (
   />
 );
 
+// registerTransitionType('scale', getScaleTransition);
+// registerTransitionType('top', getTopTransition);
+// registerTransitionType('bottom', getBottomTransition);
+// registerTransitionType('left', getLeftTransition);
+// registerTransitionType('right', getRightTransition);
+// registerTransitionType('horizontal', getHorizontalTransition);
+// registerTransitionType('vertical', getVerticalTransition);
+// registerTransitionType('flip', getFlipTransition);
+// registerTransitionType('none', ()=> ({}));
+
 const Screen1 = (props) => (
   <View style={styles.container}>
     <View style={[styles.top, { backgroundColor: '#AA3939' }]}>
-      <Transition appear="horizontal">
+      <Transition appear="left">
         <Circle background="#D46A6A" size={140} />
       </Transition>
       <View style={styles.circlesContainer}>
@@ -105,13 +115,13 @@ const Screen2 = (props) => (
         <Square background="#4F628E" size={140} />
       </Transition>
       <View style={styles.circlesContainer}>
-        <Transition appear="horizontal" delay>
+        <Transition appear="scale" delay>
           <Square background="#061539" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="scale" delay>
           <Square background="#061539" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="scale" delay>
           <Square background="#061539" size={40} />
         </Transition>
       </View>
@@ -145,13 +155,13 @@ const Screen3 = (props) => (
         <Circle background="#2D882D" size={140} />
       </Transition>
       <View style={styles.circlesContainer}>
-        <Transition appear="horizontal" delay>
+        <Transition appear="top" delay>
           <Circle background="#550000" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="top" delay>
           <Circle background="#550000" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="top" delay>
           <Circle background="#550000" size={40} />
         </Transition>
       </View>

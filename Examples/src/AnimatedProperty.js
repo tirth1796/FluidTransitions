@@ -90,15 +90,10 @@ class Screen1 extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Description />
         <Transition animated="progress" shared="square">
           <SpinningCube startColor="#FF0000" endColor="#00FF00" />
         </Transition>
-        <Transition appear="horizontal">
-          <View style={styles.buttonContainer}>
-            <Button title="Next" onPress={() => this.props.navigation.navigate('screen2')} />
-          </View>
-        </Transition>
+        <Description />
       </View>
     );
   }
@@ -108,15 +103,8 @@ class Screen2 extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Description />
         <Transition animated="progress" shared="square">
           <SpinningCube startColor="#00FF00" endColor="#0000FF" />
-        </Transition>
-        <Transition appear="horizontal">
-          <View style={styles.buttonContainer}>
-            <Button title="Back" onPress={() => this.props.navigation.goBack()} />
-            <Button title="Next" onPress={() => this.props.navigation.navigate('screen3')} />
-          </View>
         </Transition>
       </View>
     );
@@ -127,14 +115,8 @@ class Screen3 extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Description />
         <Transition animated="progress" shared="square">
           <SpinningCube prevColor={'#00FF00'} startColor="#0000FF" endColor="#FF0" />
-        </Transition>
-        <Transition>
-          <View style={styles.buttonContainer}>
-            <Button title="Back" onPress={() => this.props.navigation.goBack()} />
-          </View>
         </Transition>
       </View>
     );
