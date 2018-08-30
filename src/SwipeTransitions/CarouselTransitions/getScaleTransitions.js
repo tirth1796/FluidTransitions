@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { RouteDirection, TransitionSpecification } from './../Types';
+import { RouteDirection, TransitionSpecification } from '../../Types/index';
 
 export const getScaleTransition = (transitionInfo: TransitionSpecification) => {
   // When scaling we need to handle Android's scaling issues and not use zero values

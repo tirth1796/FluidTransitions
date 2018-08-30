@@ -1,14 +1,14 @@
 import React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 
-import TransitionItem from './../TransitionItem';
-import { createAnimatedWrapper, createAnimated, mergeStyles } from './../Utils';
+import TransitionItem from '../../TransitionItem';
+import { createAnimatedWrapper, createAnimated, mergeStyles } from '../../Utils/index';
 import {
   TransitionContext,
   NavigationDirection,
   InterpolatorSpecification,
   InterpolatorResult,
-} from './../Types';
+} from '../../Types/index';
 
 import { getInterpolatorTypes } from './InterpolatorTypes';
 

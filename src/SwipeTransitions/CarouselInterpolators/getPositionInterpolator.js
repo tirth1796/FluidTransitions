@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { InterpolatorSpecification } from './../Types/InterpolatorSpecification';
+import { InterpolatorSpecification } from '../../Types/InterpolatorSpecification';
 
 export const getPositionInterpolator = (spec: InterpolatorSpecification): StyleSheet.NamedStyles => {
   const nativeInterpolator = spec.getInterpolation(true);

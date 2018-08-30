@@ -10,9 +10,9 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { Metrics, NavigationDirection, RouteDirection } from './Types';
-import TransitionItem from './TransitionItem';
-import TransitionItems from './TransitionItems';
+import { Metrics, NavigationDirection, RouteDirection } from '../Types/index';
+import TransitionItem from '../TransitionItem';
+import TransitionItems from '../TransitionItems';
 import CarouselTransitionOverlayView from './CarouselTransitionOverlayView';
 
 import _get from 'lodash/get';

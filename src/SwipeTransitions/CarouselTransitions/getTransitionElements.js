@@ -1,15 +1,15 @@
 import React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 
-import { createAnimatedWrapper } from './../Utils/createAnimatedWrapper';
+import { createAnimatedWrapper } from '../../Utils/createAnimatedWrapper';
 import { getTransitionType } from './TransitionTypes';
-import * as Constants from './../TransitionConstants';
+import * as Constants from '../../TransitionConstants';
 import {
   TransitionContext,
   RouteDirection,
   NavigationDirection,
   TransitionSpecification,
-} from './../Types';
+} from '../../Types/index';
 
 
 const getTransitionElements = (transitionElements: Array<TransitionItem>, transitionContext: TransitionContext) => {

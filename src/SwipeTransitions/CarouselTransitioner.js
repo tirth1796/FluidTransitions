@@ -8,7 +8,7 @@ import _isEqual from 'lodash/isEqual';
 import _get from 'lodash/get';
 
 import CarouselTransitionItemsView from "./CarouselTransitionItemsView";
-import TransitionRouteView from './TransitionRouteView';
+import TransitionRouteView from '../TransitionRouteView';
 
 const emptyFunction = () => {};
 

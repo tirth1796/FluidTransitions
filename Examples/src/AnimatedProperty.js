@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, View, Animated, Button } from 'react-native';
-import { createFluidTabNavigator, createFluidNavigator, Transition } from 'react-navigation-fluid-transitions';
+import { createSwipeNavigator, Transition } from 'react-navigation-fluid-transitions';
 
 const styles = StyleSheet.create({
   container: {
@@ -123,7 +123,7 @@ class Screen3 extends Component {
   }
 }
 
-const Navigator = createFluidTabNavigator({
+const Navigator = createSwipeNavigator({
   screen1: { screen: Screen1 },
   screen2: { screen: Screen2 },
   screen3: { screen: Screen3 },

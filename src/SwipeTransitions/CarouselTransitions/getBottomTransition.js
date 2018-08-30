@@ -1,4 +1,4 @@
-import { TransitionSpecification } from './../Types/TransitionSpecification';
+import { TransitionSpecification } from '../../Types/TransitionSpecification';
 
 export const getBottomTransition = (transitionSpecification: TransitionSpecification) => {
   if (!transitionSpecification || transitionSpecification.metrics === undefined) {

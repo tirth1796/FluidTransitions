@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { InterpolatorSpecification } from './../Types/InterpolatorSpecification';
-import { getRotationFromStyle } from './../Utils';
-import { IntepolatorResult } from './../Types/InterpolatorResult';
+import { InterpolatorSpecification } from '../../Types/InterpolatorSpecification';
+import { getRotationFromStyle } from '../../Utils/index';
+import { IntepolatorResult } from '../../Types/InterpolatorResult';
 
 export const getRotationInterpolator = (spec: InterpolatorSpecification): StyleSheet.NamedStyles => {
   

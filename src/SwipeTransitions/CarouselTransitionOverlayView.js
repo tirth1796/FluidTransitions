@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import sortBy from 'lodash.sortby';
 import _get from 'lodash/get';
 
-import TransitionItem from './TransitionItem';
-import { NavigationDirection, TransitionContext, RouteDirection } from './Types';
-import * as Constants from './TransitionConstants';
+import TransitionItem from '../TransitionItem';
+import { NavigationDirection, TransitionContext, RouteDirection } from '../Types/index';
+import * as Constants from '../TransitionConstants';
 
-import { initTransitionTypes, getCarouselTransitionElements } from './CarouselTransitions';
-import { initInterpolatorTypes, getSharedElements, getAnchoredElements } from './CarouselInterpolators';
+import { initTransitionTypes, getCarouselTransitionElements } from './CarouselTransitions/index';
+import { initInterpolatorTypes, getSharedElements, getAnchoredElements } from './CarouselInterpolators/index';
 
 initTransitionTypes();
 initInterpolatorTypes();

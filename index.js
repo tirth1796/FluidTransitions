@@ -1,8 +1,8 @@
 import FluidNavigator from './src/FluidNavigator';
-import FluidTabNavigator from './src/CarouselNavigator';
+import SwipeNavigator from './src/SwipeTransitions/CarouselNavigator';
 import createFluidNavigator from './src/createFluidNavigator';
-import createFluidTabNavigator from './src/createCarouselNavigator';
+import createSwipeNavigator from './src/SwipeTransitions/createCarouselNavigator';
 import Transition from './src/TransitionView';
 
 export { RouteDirection, Metrics, TransitionSpecification } from './src/Types';
-export { FluidNavigator, FluidTabNavigator, createFluidTabNavigator, createFluidNavigator, Transition };
+export { FluidNavigator, SwipeNavigator, createSwipeNavigator, createFluidNavigator, Transition };

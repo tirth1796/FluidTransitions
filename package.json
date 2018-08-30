@@ -27,12 +27,12 @@
   "dependencies": {
     "lodash.sortby": "*",
     "lodash.chunk": "*",
-    "prop-types": "*"
+    "prop-types": "*",
+    "react-navigation": "2.0.1"
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*",
-    "react-navigation": "*"
+    "react-native": "*"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.2",

@@ -3,15 +3,15 @@ import { Dimensions, StyleSheet } from 'react-native';
 
 import _findIndex from 'lodash/findIndex';
 
-import { createAnimatedWrapper } from './../Utils/createAnimatedWrapper';
+import { createAnimatedWrapper } from '../../Utils/createAnimatedWrapper';
 import { getTransitionType } from './TransitionTypes';
-import * as Constants from './../TransitionConstants';
+import * as Constants from '../../TransitionConstants';
 import {
   TransitionContext,
   RouteDirection,
   NavigationDirection,
   TransitionSpecification,
-} from './../Types';
+} from '../../Types/index';
 
 const screenWidth = Dimensions.get('window').width;
 

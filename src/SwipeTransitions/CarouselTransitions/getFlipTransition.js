@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { RouteDirection, TransitionSpecification } from './../Types';
+import { RouteDirection, TransitionSpecification } from '../../Types/index';
 
 export const getFlipTransition = (transitionInfo: TransitionSpecification) => {
   const { progress, start, end, direction } = transitionInfo;

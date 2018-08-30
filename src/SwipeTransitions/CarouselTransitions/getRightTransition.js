@@ -1,4 +1,4 @@
-import { TransitionSpecification } from './../Types/TransitionSpecification';
+import { TransitionSpecification } from '../../Types/TransitionSpecification';
 import {Dimensions} from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { InterpolatorSpecification } from './../Types/InterpolatorSpecification';
+import { InterpolatorSpecification } from '../../Types/InterpolatorSpecification';
 import { getStyleInterpolator } from './getStyleInterpolator';
 
 export const getBackgroundInterpolator = (spec: InterpolatorSpecification): StyleSheet.NamedStyles => {  

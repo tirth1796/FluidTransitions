@@ -1,18 +1,18 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
 
-import TransitionItem from './../TransitionItem';
-import { createAnimatedWrapper, createAnimated, mergeStyles } from './../Utils';
+import TransitionItem from '../../TransitionItem';
+import { createAnimatedWrapper, createAnimated, mergeStyles } from '../../Utils/index';
 import {
   TransitionContext,
   NavigationDirection,
   InterpolatorSpecification,
   InterpolatorResult,
-} from './../Types';
+} from '../../Types/index';
 
 import { getInterpolatorTypes } from './InterpolatorTypes';
 import _findIndex from 'lodash/findIndex';
-import * as Constants from './../TransitionConstants';
+import * as Constants from '../../TransitionConstants';
 
 const screenWidth = Dimensions.get('window').width;
 

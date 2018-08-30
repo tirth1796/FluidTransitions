@@ -1,4 +1,4 @@
-import { RouteDirection, TransitionSpecification } from './../Types';
+import { RouteDirection, TransitionSpecification } from '../../Types/index';
 
 export const getHorizontalTransition = (transitionInfo: TransitionSpecification) => {
   if (!transitionInfo || transitionInfo.metrics === undefined)
