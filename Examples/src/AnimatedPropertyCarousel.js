@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, View, Animated, Button } from 'react-native';
-import { createFluidNavigator, Transition } from 'react-navigation-fluid-transitions';
+import { createSwipeNavigator, Transition } from 'react-navigation-fluid-transitions';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,8 +32,8 @@ class SpinningCube extends Component {
   render() {
     if (this.props.progress) {
       const spin = this.props.progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['0deg', '180deg'],
+        inputRange: [ -1, 0, 1],
+        outputRange: ['180deg', '0deg', '180deg'],
       });
 
       const background = this.props.progress.interpolate({
@@ -90,15 +90,10 @@ class Screen1 extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Description />
         <Transition animated="progress" shared="square">
           <SpinningCube startColor="#FF0000" endColor="#00FF00" />
         </Transition>
-        <Transition appear="horizontal">
-          <View style={styles.buttonContainer}>
-            <Button title="Next" onPress={() => this.props.navigation.navigate('screen2')} />
-          </View>
-        </Transition>
+        <Description />
       </View>
     );
   }
@@ -108,15 +103,8 @@ class Screen2 extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Description />
         <Transition animated="progress" shared="square">
           <SpinningCube startColor="#00FF00" endColor="#0000FF" />
-        </Transition>
-        <Transition appear="horizontal">
-          <View style={styles.buttonContainer}>
-            <Button title="Back" onPress={() => this.props.navigation.goBack()} />
-            <Button title="Next" onPress={() => this.props.navigation.navigate('screen3')} />
-          </View>
         </Transition>
       </View>
     );
@@ -127,24 +115,20 @@ class Screen3 extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Description />
         <Transition animated="progress" shared="square">
-          <SpinningCube startColor="#0000FF" endColor="#FF0" />
-        </Transition>
-        <Transition appear="horizontal">
-          <View style={styles.buttonContainer}>
-            <Button title="Back" onPress={() => this.props.navigation.goBack()} />
-          </View>
+          <SpinningCube prevColor={'#00FF00'} startColor="#0000FF" endColor="#FF0" />
         </Transition>
       </View>
     );
   }
 }
 
-const Navigator = createFluidNavigator({
+const Navigator = createSwipeNavigator({
   screen1: { screen: Screen1 },
   screen2: { screen: Screen2 },
   screen3: { screen: Screen3 },
+}, {
+  bounceResistance: 1
 });
 
 class AnimatedProperty extends React.Component {

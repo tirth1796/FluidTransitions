@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, Dimensions, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
-import { Transition, FluidNavigator, createSwipeNavigator } from 'react-navigation-fluid-transitions';
+import { Transition, FluidNavigator } from 'react-navigation-fluid-transitions';
 
 const styles = StyleSheet.create({
   container: {
@@ -182,7 +182,7 @@ const Screen2 = (props) => (
   </View>
 );
 
-const Navigator = createSwipeNavigator({
+const Navigator = FluidNavigator({
   screen1: { screen: Screen1 },
   screen2: { screen: Screen2 },
 }, {

@@ -17,6 +17,7 @@ import OnboardingCarousel from './src/OnboardingCarousel';
 import ShoeShop from './src/ShoeShop';
 import FlatList from './src/FlatList';
 import AnimatedProperty from './src/AnimatedProperty';
+import AnimatedPropertyCarousel from './src/AnimatedPropertyCarousel';
 import Playground from './src/Playground';
 import TabNav from './src/TabNav';
 
@@ -31,6 +32,7 @@ const ExampleNavigator = createStackNavigator({
   shoes: { screen: ShoeShop },
   flatlist: { screen: FlatList },
   animatedProperty: { screen: AnimatedProperty },
+  animatedPropertyC: { screen: AnimatedPropertyCarousel },
   playground: { screen: TabNav },
 });
 
