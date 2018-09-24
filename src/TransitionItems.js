@@ -1,5 +1,3 @@
-
-import { UIManager } from 'react-native';
 import TransitionItem from './TransitionItem';
 
 
@@ -8,7 +6,7 @@ export default class TransitionItems {
     this._items = [];
   }
 
-  _items: Array<TransitionItem>
+  _items: Array<TransitionItem>;
 
   count(): number {
     return this._items.length;
@@ -17,7 +15,7 @@ export default class TransitionItems {
   add(item: TransitionItem): boolean {
     if (this._items.findIndex(e => e.name === item.name && e.route === item.route) >= 0) {
       return false;
-    }    
+    }
     this._items = [...this._items, item];
     return true;
   }
@@ -36,12 +34,12 @@ export default class TransitionItems {
   }
   getRoutes() {
     const routes = [];
-    for (let i = 0; i < this._items.length; i++) {
+    for (let i = 0; i < this._items.length; i += 1) {
       if (!routes.includes(this._items[i].route)) {
         routes.push(this._items[i].route);
       }
     }
-    if (routes.length != 2) {
+    if (routes.length !== 2) {
       throw new Error(`Number of routes should be 2, was ${routes.length}`);
     }
 
@@ -61,7 +59,7 @@ export default class TransitionItems {
       .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
     const rightElements = this._getItemPairs(currRoute, rightRoute)
       .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
-    const sharedElements = [...leftElements, ...rightElements]
+    const sharedElements = [...leftElements, ...rightElements];
     return sharedElements;
   }
 
@@ -79,14 +77,14 @@ export default class TransitionItems {
     return items;
   }
   getTransitionElementsCarousel(routes = []): Array<TransitionItem> {
-    let items = this._items.filter(item => {
+    const items = this._items.filter((item) => {
       let itemInRoutes = false;
-      routes.forEach(route => {
-        if(item.route === route){
+      routes.forEach((route) => {
+        if (item.route === route) {
           itemInRoutes = true;
         }
       });
-      return (item.appear !== undefined || item.disappear !== undefined) && itemInRoutes
+      return (item.appear !== undefined || item.disappear !== undefined) && itemInRoutes;
     });
 
 
@@ -117,10 +115,10 @@ export default class TransitionItems {
     const anchorItems = this._items
       .filter(e => (e.route === fromRoute || e.route === toRoute) && e.anchor);
 
-    return pairs.map(p => { 
+    return pairs.map((p) => {
       const { fromItem, toItem } = p;
-      if(fromItem) fromItem.anchors = anchorItems.filter(e => e.route === p.fromItem.route && e.anchor === p.fromItem.name);
-      if(toItem) toItem.anchors = anchorItems.filter(e => e.route === p.toItem.route && e.anchor === p.toItem.name);
+      if (fromItem) fromItem.anchors = anchorItems.filter(e => e.route === p.fromItem.route && e.anchor === p.fromItem.name);
+      if (toItem) toItem.anchors = anchorItems.filter(e => e.route === p.toItem.route && e.anchor === p.toItem.name);
       return { fromItem, toItem };
     });
   }

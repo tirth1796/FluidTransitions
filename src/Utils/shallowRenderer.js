@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -8,7 +9,6 @@
  * @preventMunge
  */
 
-'use strict';
 
 const checkPropTypes = require('prop-types/checkPropTypes');
 const React = require('react');
@@ -17,7 +17,7 @@ const emptyObject = require('fbjs/lib/emptyObject');
 const invariant = require('fbjs/lib/invariant');
 
 class ShallowRenderer {
-  static createRenderer = function() {
+  static createRenderer = function () {
     return new ShallowRenderer();
   };
 
@@ -40,7 +40,7 @@ class ShallowRenderer {
     return this._rendered;
   }
 
-  render(element, context = emptyObject) {    
+  render(element, context = emptyObject) {
     if (this._rendering) {
       return;
     }
@@ -51,22 +51,20 @@ class ShallowRenderer {
 
     if (this._instance) {
       this._updateClassComponent(element.props, context);
-    } else {
-      if (shouldConstruct(element.type)) {
-        this._instance = new element.type(
-          element.props,
-          context,
-          this._updater,
-        );
+    } else if (shouldConstruct(element.type)) {
+      this._instance = new element.type(
+        element.props,
+        context,
+        this._updater,
+      );
 
-        if (element.type.hasOwnProperty('contextTypes')) {
-          currentlyValidatingElement = element;
-          currentlyValidatingElement = null;
-        }
-        this._mountClassComponent(element.props, context);
-      } else {
-        this._rendered = element.type(element.props, context);
+      if (element.type.hasOwnProperty('contextTypes')) {
+        currentlyValidatingElement = element;
+        currentlyValidatingElement = null;
       }
+      this._mountClassComponent(element.props, context);
+    } else {
+      this._rendered = element.type(element.props, context);
     }
 
     this._rendering = false;

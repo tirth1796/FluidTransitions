@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
 import { FluidNavigator, Transition } from 'react-navigation-fluid-transitions';
@@ -40,31 +41,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  figureContainer: {
+    margin: 14
+  },
 });
 
-const Circle = (props) => (
-  <View style={{
-    backgroundColor: props.background,
-    width: props.size,
-    height: props.size,
-    borderRadius: props.size / 2,
-    margin: 14 }}
+const Circle = props => (
+  <View
+    style={[styles.figureContainer, {
+      backgroundColor: props.background,
+      width: props.size,
+      height: props.size,
+      borderRadius: props.size / 2
+    }]}
   />
 );
 
-const Square = (props) => (
-  <View style={{
+Circle.propTypes = {
+  background: PropTypes.string,
+  size: PropTypes.number,
+};
+
+const Square = props => (
+  <View style={[styles.figureContainer, {
     backgroundColor: props.background,
     width: props.size,
     height: props.size,
-    margin: 14 }}
+  }]}
   />
 );
 
-const Screen1 = (props) => (
+Square.propTypes = {
+  background: PropTypes.string,
+  size: PropTypes.number,
+};
+
+const topColors = {
+  screen1: '#AA3939',
+  screen2: '#2E4272',
+  screen3: '#88CC88',
+};
+
+const Screen1 = props => (
   <View style={styles.container}>
-    <View style={[styles.top, { backgroundColor: '#AA3939' }]}>
-      <Transition appear="horizontal">
+    <View style={[styles.top, { backgroundColor: topColors.screen1 }]}>
+      <Transition appear="left">
         <Circle background="#D46A6A" size={140} />
       </Transition>
       <View style={styles.circlesContainer}>
@@ -98,20 +119,24 @@ const Screen1 = (props) => (
   </View>
 );
 
-const Screen2 = (props) => (
+Screen1.propTypes = {
+  navigation: PropTypes.object,
+};
+
+const Screen2 = props => (
   <View style={styles.container}>
-    <View style={[styles.top, { backgroundColor: '#2E4272' }]}>
+    <View style={[styles.top, { backgroundColor: topColors.screen2 }]}>
       <Transition appear="horizontal">
         <Square background="#4F628E" size={140} />
       </Transition>
       <View style={styles.circlesContainer}>
-        <Transition appear="horizontal" delay>
+        <Transition appear="scale" delay>
           <Square background="#061539" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="scale" delay>
           <Square background="#061539" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="scale" delay>
           <Square background="#061539" size={40} />
         </Transition>
       </View>
@@ -130,7 +155,6 @@ const Screen2 = (props) => (
       <Transition appear="horizontal">
         <Button title="Back" onPress={() => props.navigation.goBack()} />
       </Transition>
-      <View style={{ width: 20 }} />
       <Transition appear="horizontal">
         <Button title="Next" onPress={() => props.navigation.navigate('screen3')} />
       </Transition>
@@ -138,20 +162,24 @@ const Screen2 = (props) => (
   </View>
 );
 
-const Screen3 = (props) => (
+Screen2.propTypes = {
+  navigation: PropTypes.object,
+};
+
+const Screen3 = props => (
   <View style={styles.container}>
-    <View style={[styles.top, { backgroundColor: '#88CC88' }]}>
+    <View style={[styles.top, { backgroundColor: topColors.screen3 }]}>
       <Transition appear="horizontal">
         <Circle background="#2D882D" size={140} />
       </Transition>
       <View style={styles.circlesContainer}>
-        <Transition appear="horizontal" delay>
+        <Transition appear="top" delay>
           <Circle background="#550000" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="top" delay>
           <Circle background="#550000" size={40} />
         </Transition>
-        <Transition appear="horizontal" delay>
+        <Transition appear="top" delay>
           <Circle background="#550000" size={40} />
         </Transition>
       </View>
@@ -172,6 +200,10 @@ const Screen3 = (props) => (
   </View>
 );
 
+Screen3.propTypes = {
+  navigation: PropTypes.object,
+};
+
 const Navigator = FluidNavigator({
   screen1: { screen: Screen1 },
   screen2: { screen: Screen2 },
@@ -191,6 +223,10 @@ class Onboarding extends React.Component {
     );
   }
 }
+
+Onboarding.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default Onboarding;
 

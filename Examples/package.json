@@ -3,15 +3,19 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "node node_modules/react-native/local-cli/cli.js start --reset-cache",
     "test": "jest"
   },
   "dependencies": {
+    "lodash.sortby": "*",
+    "lodash.chunk": "*",
+    "prop-types": "*",
     "react": "16.2.0",
     "react-native": "0.53.3",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "2.0.1",
-    "react-navigation-fluid-transitions": "../"
+    "react-navigation-fluid-transitions": "*",
+    "swipe-transitions": "../"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.2",

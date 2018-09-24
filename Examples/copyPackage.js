@@ -1,4 +1,4 @@
-const path = require('path');
+/* eslint-disable import/no-extraneous-dependencies */
 const fs = require('fs-extra');
 const rimraf = require('rimraf');
 
@@ -13,6 +13,6 @@ function copy(source, destination) {
 }
 
 copy(
-  'node_modules/react-navigation-fluid-transitions/src',
+  'node_modules/swipe-transitions/src',
   '../src',
 );

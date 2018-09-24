@@ -10,28 +10,24 @@ type TransitionRouteViewProps = {
 }
 
 class TransitionRouteView extends React.Component<TransitionRouteViewProps> {
-  constructor(props) {
-    super(props);
-  }
-
   static childContextTypes = {
     route: PropTypes.string,
-  }
+  };
 
   static contextTypes = {
     onSceneReady: PropTypes.func,
-  }
-  
-  componentDidMount() {    
-    const { onSceneReady } = this.context;
-    if (!onSceneReady || !this.props.sceneKey) return;
-    onSceneReady(this.props.sceneKey);
-  }
+  };
 
   getChildContext() {
     return {
       route: this.props.route,
     };
+  }
+
+  componentDidMount() {
+    const { onSceneReady } = this.context;
+    if (!onSceneReady || !this.props.sceneKey) return;
+    onSceneReady(this.props.sceneKey);
   }
 
   render() {

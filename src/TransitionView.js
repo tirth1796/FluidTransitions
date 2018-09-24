@@ -1,6 +1,7 @@
+/* eslint-disable no-plusplus,react/sort-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Animated, findNodeHandle } from 'react-native';
+import { StyleSheet, findNodeHandle } from 'react-native';
 
 import TransitionItem from './TransitionItem';
 import * as Constants from './TransitionConstants';
@@ -17,8 +18,17 @@ type TransitionProps = {
   delay: ?boolean,
   animated: ?string,
   anchor: ?string,
-  children: Array<any>,  
+  name: ?string,
+  children: Array<any>,
 }
+
+const styles = StyleSheet.create({
+  transition: {
+    // backgroundColor: '#0000EF22',
+    // borderColor: '#FF0000',
+    // borderWidth: 1,
+  },
+});
 
 class Transition extends React.Component<TransitionProps> {
   static contextTypes = {
@@ -29,19 +39,19 @@ class Transition extends React.Component<TransitionProps> {
     getDirectionForRoute: PropTypes.func,
     getDirection: PropTypes.func,
     getIndex: PropTypes.func,
-    getIsPartOfSharedTransition: PropTypes.func,    
-    getIsPartOfTransition: PropTypes.func,    
-    getIsAnchored: PropTypes.func   
-  }
+    getIsPartOfSharedTransition: PropTypes.func,
+    getIsPartOfTransition: PropTypes.func,
+    getIsAnchored: PropTypes.func
+  };
 
   constructor(props: TransitionProps, context: any) {
     super(props, context);
     this._name = `${uniqueBaseId}-${uuidCount++}`;
-    this._animatedComponent = null;    
+    this._animatedComponent = null;
   }
 
-  _name: string
-  _route: string
+  _name: string;
+  _route: string;
   _isMounted: boolean;
   _viewRef: any;
   _animatedComponent: any;
@@ -54,7 +64,7 @@ class Transition extends React.Component<TransitionProps> {
       register(new TransitionItem(
         this._getName(), this.context.route,
         this, this.props.shared !== undefined, this.props.appear,
-        this.props.disappear, this.props.delay === undefined?false : this.props.delay,
+        this.props.disappear, this.props.delay === undefined ? false : this.props.delay,
         zIndex++, this.props.anchor, this.props.animated
       ));
     }
@@ -92,7 +102,7 @@ class Transition extends React.Component<TransitionProps> {
 
     const visibilityStyle = this.getVisibilityStyle();
     const key = `${this._getName()}-${this._route}`;
-    
+
     element = React.createElement(element.type, { ...element.props, key, ref: this.setViewRef });
     return createAnimatedWrapper({
       component: element,
@@ -100,45 +110,39 @@ class Transition extends React.Component<TransitionProps> {
       nativeCached: this._outerAnimatedComponent,
       cached: this._animatedComponent,
       log: true,
-      logPrefix: "TV " + this._getName() + "/" + this._route
+      logPrefix: `TV ${this._getName()}/${this._route}`
     });
   }
-  
+
   setViewRef = (ref: any) => {
     this._viewRef = ref;
-  }
+  };
 
   getVisibilityStyle() {
-    const { getTransitionProgress, getIndex, getIsAnchored,
-      getIsPartOfSharedTransition, getIsPartOfTransition } = this.context;
+    const {
+      getTransitionProgress, getIndex, getIsAnchored,
+      getIsPartOfSharedTransition, getIsPartOfTransition
+    } = this.context;
     if (!getTransitionProgress || !getIndex || !getIsAnchored ||
       !getIsPartOfSharedTransition || !getIsPartOfTransition) return {};
-      
+
     const progress = getTransitionProgress();
     const index = getIndex();
     if (!progress || index === undefined) return { };
 
-    const inputRange = [index - 1, (index-1) + Constants.OP, index - Constants.OP, index,index + Constants.OP, index + 1 - Constants.OP, index+1];
-    const outputRange = [1, 0, 0, 1, 0 , 0, 1];
-    
-    const isPartOfSharedTransition = getIsPartOfSharedTransition(this._getName(), this._route);        
+    const inputRange = [index - 1, (index - 1) + Constants.OP, index - Constants.OP, index, index + Constants.OP, (index + 1) - Constants.OP, index + 1];
+    const outputRange = [1, 0, 0, 1, 0, 0, 1];
+
+    const isPartOfSharedTransition = getIsPartOfSharedTransition(this._getName(), this._route);
     const isPartOfTransition = getIsPartOfTransition(this._getName(), this._route);
     const isAnchored = getIsAnchored(this._getName(), this._route);
     const visibilityProgress = progress.interpolate({ inputRange, outputRange });
 
     if (isPartOfSharedTransition || isPartOfTransition || isAnchored) {
-      return { opacity: visibilityProgress };          
-    }  
+      return { opacity: visibilityProgress };
+    }
     return {};
   }
 }
-
-const styles = StyleSheet.create({
-  transition: {
-    // backgroundColor: '#0000EF22',
-    // borderColor: '#FF0000',
-    // borderWidth: 1,
-  },
-});
 
 export default Transition;

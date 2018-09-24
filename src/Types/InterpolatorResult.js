@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-type InterpolatorResult = {
+export type InterpolatorResult = {
   nativeAnimationStyles: StyleSheet.NamedStyles,
-  animationStyles:  StyleSheet.NamedStyles
+  animationStyles: StyleSheet.NamedStyles
 }

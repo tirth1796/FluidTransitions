@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, Text, StyleSheet } from 'react-native';
 
-import { FluidNavigator, Transition, createSwipeNavigator } from 'react-navigation-fluid-transitions';
+import { Transition, createSwipeNavigator } from 'swipe-transitions';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,13 +19,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 40,
   },
-  footer: {
-    flex: 0.1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingBottom: 16,
-  },
   text: {
     textAlign: 'center',
   },
@@ -40,26 +34,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  figureContainer: {
+    margin: 14
+  },
 });
 
-const Circle = (props) => (
-  <View style={{
-    backgroundColor: props.background,
-    width: props.size,
-    height: props.size,
-    borderRadius: props.size / 2,
-    margin: 14 }}
+const Circle = props => (
+  <View
+    style={[styles.figureContainer, {
+      backgroundColor: props.background,
+      width: props.size,
+      height: props.size,
+      borderRadius: props.size / 2
+    }]}
   />
 );
 
-const Square = (props) => (
-  <View style={{
+Circle.propTypes = {
+  background: PropTypes.string,
+  size: PropTypes.number,
+};
+
+const Square = props => (
+  <View style={[styles.figureContainer, {
     backgroundColor: props.background,
     width: props.size,
     height: props.size,
-    margin: 14 }}
+  }]}
   />
 );
+
+Square.propTypes = {
+  background: PropTypes.string,
+  size: PropTypes.number,
+};
+
+const topColors = {
+  screen1: '#AA3939',
+  screen2: '#2E4272',
+  screen3: '#88CC88',
+};
 
 // registerTransitionType('scale', getScaleTransition);
 // registerTransitionType('top', getTopTransition);
@@ -71,9 +85,9 @@ const Square = (props) => (
 // registerTransitionType('flip', getFlipTransition);
 // registerTransitionType('none', ()=> ({}));
 
-const Screen1 = (props) => (
+const Screen1 = () => (
   <View style={styles.container}>
-    <View style={[styles.top, { backgroundColor: '#AA3939' }]}>
+    <View style={[styles.top, { backgroundColor: topColors.screen1 }]}>
       <Transition appear="left">
         <Circle background="#D46A6A" size={140} />
       </Transition>
@@ -100,17 +114,12 @@ const Screen1 = (props) => (
         </View>
       </Transition>
     </View>
-    <View style={styles.footer}>
-      <Transition appear="horizontal">
-        <Button title="Next" onPress={() => props.navigation.navigate('screen2')} />
-      </Transition>
-    </View>
   </View>
 );
 
-const Screen2 = (props) => (
+const Screen2 = () => (
   <View style={styles.container}>
-    <View style={[styles.top, { backgroundColor: '#2E4272' }]}>
+    <View style={[styles.top, { backgroundColor: topColors.screen2 }]}>
       <Transition appear="horizontal">
         <Square background="#4F628E" size={140} />
       </Transition>
@@ -136,21 +145,12 @@ const Screen2 = (props) => (
         </View>
       </Transition>
     </View>
-    <View style={styles.footer}>
-      <Transition appear="horizontal">
-        <Button title="Back" onPress={() => props.navigation.goBack()} />
-      </Transition>
-      <View style={{ width: 20 }} />
-      <Transition appear="horizontal">
-        <Button title="Next" onPress={() => props.navigation.navigate('screen3')} />
-      </Transition>
-    </View>
   </View>
 );
 
-const Screen3 = (props) => (
+const Screen3 = () => (
   <View style={styles.container}>
-    <View style={[styles.top, { backgroundColor: '#88CC88' }]}>
+    <View style={[styles.top, { backgroundColor: topColors.screen3 }]}>
       <Transition appear="horizontal">
         <Circle background="#2D882D" size={140} />
       </Transition>
@@ -174,11 +174,6 @@ const Screen3 = (props) => (
         </View>
       </Transition>
     </View>
-    <View style={styles.footer}>
-      <Transition appear="horizontal">
-        <Button title="Back" onPress={() => props.navigation.goBack()} />
-      </Transition>
-    </View>
   </View>
 );
 
@@ -197,5 +192,8 @@ class Onboarding extends React.Component {
   }
 }
 
-export default Onboarding;
+Onboarding.propTypes = {
+  navigation: PropTypes.object,
+};
 
+export default Onboarding;

@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import { Text, StyleSheet, View, Animated, Button } from 'react-native';
-import { createSwipeNavigator, Transition } from 'react-navigation-fluid-transitions';
+/* eslint-disable react/no-multi-comp */
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Text, StyleSheet, View, Animated } from 'react-native';
+import { createSwipeNavigator, Transition } from 'swipe-transitions';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,10 +19,7 @@ const styles = StyleSheet.create({
   animatedElement: {
     width: 150,
     height: 150,
-  },
-  buttonContainer: {
-    margin: 40,
-    flexDirection: 'row',
+    borderRadius: 0,
   },
   text: {
     margin: 40,
@@ -28,11 +27,11 @@ const styles = StyleSheet.create({
   },
 });
 
-class SpinningCube extends Component {
+class SpinningCube extends PureComponent {
   render() {
     if (this.props.progress) {
       const spin = this.props.progress.interpolate({
-        inputRange: [ -1, 0, 1],
+        inputRange: [-1, 0, 1],
         outputRange: ['180deg', '0deg', '180deg'],
       });
 
@@ -63,19 +62,19 @@ class SpinningCube extends Component {
         </View>
       );
     }
-
     return (
       <View style={styles.animated}>
-        <Animated.View style={[styles.animatedElement,
-          {
-            backgroundColor: this.props.startColor,
-            borderRadius: 0,
-          }]}
-        />
+        <Animated.View style={[styles.animatedElement, { backgroundColor: this.props.startColor }]} />
       </View>
     );
   }
 }
+
+SpinningCube.propTypes = {
+  progress: PropTypes.object,
+  startColor: PropTypes.string,
+  endColor: PropTypes.string,
+};
 
 const Description = () => (
   <Text style={styles.text}>
@@ -86,42 +85,30 @@ const Description = () => (
   </Text>
 );
 
-class Screen1 extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Transition animated="progress" shared="square">
-          <SpinningCube startColor="#FF0000" endColor="#00FF00" />
-        </Transition>
-        <Description />
-      </View>
-    );
-  }
-}
+const Screen1 = () => (
+  <View style={styles.container}>
+    <Transition animated="progress" shared="square">
+      <SpinningCube startColor="#FF0000" endColor="#00FF00" />
+    </Transition>
+    <Description />
+  </View>
+);
 
-class Screen2 extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Transition animated="progress" shared="square">
-          <SpinningCube startColor="#00FF00" endColor="#0000FF" />
-        </Transition>
-      </View>
-    );
-  }
-}
+const Screen2 = () => (
+  <View style={styles.container}>
+    <Transition animated="progress" shared="square">
+      <SpinningCube startColor="#00FF00" endColor="#0000FF" />
+    </Transition>
+  </View>
+);
 
-class Screen3 extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Transition animated="progress" shared="square">
-          <SpinningCube prevColor={'#00FF00'} startColor="#0000FF" endColor="#FF0" />
-        </Transition>
-      </View>
-    );
-  }
-}
+const Screen3 = () => (
+  <View style={styles.container}>
+    <Transition animated="progress" shared="square">
+      <SpinningCube prevColor="#00FF00" startColor="#0000FF" endColor="#FF0" />
+    </Transition>
+  </View>
+);
 
 const Navigator = createSwipeNavigator({
   screen1: { screen: Screen1 },
@@ -139,5 +126,9 @@ class AnimatedProperty extends React.Component {
     );
   }
 }
+
+AnimatedProperty.propTypes = {
+  navigation: PropTypes.object,
+};
 
 export default AnimatedProperty;

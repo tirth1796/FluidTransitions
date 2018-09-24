@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ItemButton = (props) => (
+const ItemButton = props => (
   <TouchableOpacity onPress={() => props.nav.navigate(props.target)} style={styles.buttonContainer}>
     <View style={styles.button} backgroundColor="#DEDEDE">
       <Text style={styles.buttonText}>{props.text}</Text>
@@ -32,17 +33,23 @@ const ItemButton = (props) => (
   </TouchableOpacity>
 );
 
-export default (props) => (
+ItemButton.propTypes = {
+  nav: PropTypes.object,
+  text: PropTypes.string,
+  target: PropTypes.string,
+};
+
+const HomeScreen = props => (
   <ScrollView contentContainerStyle={styles.container}>
     <ItemButton color="#C62828" icon="smartphone" text="Onboarding Transitions Carousel" nav={props.navigation} target="onboardingC" />
     <ItemButton color="#F44336" icon="film" text="Shared Carousel Transition" nav={props.navigation} target="animatedPropertyC" />
-    <ItemButton color="#EF5350" icon="share-2" text="Shared Elements" nav={props.navigation} target="shared" />
-    <ItemButton color="#F44336" icon="corner-right-up" text="Appearing Elements" nav={props.navigation} target="appear" />
-    <ItemButton color="#E53935" icon="image" text="Image Transitions" nav={props.navigation} target="image" />
-    <ItemButton color="#D32F2F" icon="layout" text="Layout Transitions" nav={props.navigation} target="layout" />
     <ItemButton color="#C62828" icon="smartphone" text="Onboarding Transitions" nav={props.navigation} target="onboarding" />
-    <ItemButton color="#D32F2F" icon="shopping-cart" text="Shoe Shopping" nav={props.navigation} target="shoes" />
-    <ItemButton color="#E53935" icon="list" text="FlatList" nav={props.navigation} target="flatlist" />
     <ItemButton color="#F44336" icon="film" text="Animated Property" nav={props.navigation} target="animatedProperty" />
   </ScrollView>
 );
+
+HomeScreen.propTypes = {
+  navigation: PropTypes.object,
+};
+
+export default HomeScreen;

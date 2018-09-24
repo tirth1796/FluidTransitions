@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 
 import { Metrics } from './../Types/Metrics';
 
@@ -12,13 +13,19 @@ export const getOriginalRect = (params: GetOriginalRectParameters): Metrics => {
     return params.boundingBox;
   }
 
-  const { x, y, width, height } = params.boundingBox;
+  const {
+    x, y, width, height
+  } = params.boundingBox;
 
   if (params.skipWidth) {
     const cx = x + ((Math.cos(params.theta) * width - Math.sin(params.theta) * height) / 2);
     const cy = y + ((Math.sin(params.theta) * width + Math.cos(params.theta) * height) / 2);
-    const p0 = rotatePoint({ x, y, cx, cy, theta: params.theta });
-    return { x: Math.round(p0.x), y: Math.round(p0.y), width, height };
+    const p0 = rotatePoint({
+      x, y, cx, cy, theta: params.theta
+    });
+    return {
+      x: Math.round(p0.x), y: Math.round(p0.y), width, height
+    };
   }
 
   let theta = -1 * params.theta;
@@ -33,7 +40,7 @@ export const getOriginalRect = (params: GetOriginalRectParameters): Metrics => {
 
   // Get rotated height/width
   const quad = getQuadrant(theta);
-  const a = 1 / (Math.pow(cos, 2) - (Math.pow(sin, 2)));
+  const a = 1 / ((cos ** 2) - (sin ** 2));
 
   const aw = (1 * width) * cos;
   const bw = (height * sin);
@@ -44,8 +51,8 @@ export const getOriginalRect = (params: GetOriginalRectParameters): Metrics => {
   const nh = (quad === 0 || quad === 2) ? a * (ah + bh) : a * (ah - bh);
 
   const retVal = {
-    x: Math.round(x + (width - Math.abs(nw)) * 0.5),
-    y: Math.round(y + (height - Math.abs(nh)) * 0.5),
+    x: Math.round(x + ((width - Math.abs(nw)) * 0.5)),
+    y: Math.round(y + ((height - Math.abs(nh)) * 0.5)),
     width: Math.abs(Math.round(nw)),
     height: Math.abs(Math.round(nh)),
   };
@@ -60,12 +67,14 @@ export type RotatePointParameters = {
   theta: number,
 }
 export const rotatePoint = (params: RotatePointParameters) => {
-  const { x, y, cx, cy, theta } = params;
+  const {
+    x, y, cx, cy, theta
+  } = params;
 
   const cos = Math.cos(theta);
   const sin = Math.sin(theta);
   const nx = (cos * (x - cx)) + (sin * (y - cy)) + cx;
-  const ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+  const ny = ((cos * (y - cy)) - (sin * (x - cx))) + cy;
   return { x: nx, y: ny };
 };
 
@@ -74,16 +83,26 @@ export type GetBoundingBoxParameters = {
   theta: number,
 };
 export const getBoundingBox = (params: GetBoundingBoxParameters) => {
-  const { x, y, width, height } = params.rect;
+  const {
+    x, y, width, height
+  } = params.rect;
   const { theta } = params;
 
   const cx = x + (width / 2);
   const cy = y + (height / 2);
 
-  const tl = rotatePoint({ x, y, cx, cy, theta });
-  const bl = rotatePoint({ x, y: y + height, cx, cy, theta });
-  const tr = rotatePoint({ x: x + width, y, cx, cy, theta });
-  const br = rotatePoint({ x: x + width, y: y + height, cx, cy, theta });
+  const tl = rotatePoint({
+    x, y, cx, cy, theta
+  });
+  const bl = rotatePoint({
+    x, y: y + height, cx, cy, theta
+  });
+  const tr = rotatePoint({
+    x: x + width, y, cx, cy, theta
+  });
+  const br = rotatePoint({
+    x: x + width, y: y + height, cx, cy, theta
+  });
 
   const minX = Math.min(tl.x, bl.x, tr.x, br.x);
   const maxX = Math.max(tl.x, bl.x, tr.x, br.x);
@@ -99,7 +118,7 @@ export const getBoundingBox = (params: GetBoundingBoxParameters) => {
 };
 
 export const getQuadrant = (theta: number) => {
-  const angle = theta * 180 / Math.PI;
+  const angle = (theta * 180) / Math.PI;
   let normangle = angle % 360;
   if (normangle < 0) {
     normangle += 360;
@@ -112,7 +131,7 @@ export const getQuadrant = (theta: number) => {
   return -1;
 };
 
-export const degToRad = (deg: number): number => deg * Math.PI / 180;
-export const radToDeg = (rad: number): number => rad * 180 / Math.PI;
+export const degToRad = (deg: number): number => (deg * Math.PI) / 180;
+export const radToDeg = (rad: number): number => (rad * 180) / Math.PI;
 
 const small = degToRad(0.00000001);
