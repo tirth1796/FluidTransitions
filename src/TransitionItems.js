@@ -1,12 +1,15 @@
 import TransitionItem from './TransitionItem';
 
+import _isEqual from 'lodash/isEqual';
+import _findIndex from 'lodash/findIndex';
+import _get from 'lodash/get';
 
 export default class TransitionItems {
   constructor() {
     this._items = [];
   }
 
-  _items: Array<TransitionItem>;
+  _items: Array<TransitionItem>
 
   count(): number {
     return this._items.length;
@@ -54,14 +57,6 @@ export default class TransitionItems {
     return this._getItemPairs(fromRoute, toRoute)
       .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
   }
-  getSharedElementsCarousel(leftRoute: string, currRoute: string, rightRoute: string): Array<TransitionItem> {
-    const leftElements = this._getItemPairs(leftRoute, currRoute)
-      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
-    const rightElements = this._getItemPairs(currRoute, rightRoute)
-      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
-    const sharedElements = [...leftElements, ...rightElements];
-    return sharedElements;
-  }
 
   getTransitionElements(fromRoute: string, toRoute: string): Array<TransitionItem> {
     const itemPairs = this._getItemPairs(fromRoute, toRoute)
@@ -73,10 +68,26 @@ export default class TransitionItems {
     items = items.filter(e => itemPairs.findIndex(p =>
       (e.name === p.fromItem.name && e.route === p.fromItem.route) ||
       (e.name === p.toItem.name && e.route === p.toItem.route)) === -1);
+    const leftElements = this._getItemPairs(leftRoute, currRoute)
+      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
+    const rightElements = this._getItemPairs(currRoute, rightRoute)
+      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
+    const sharedElements = [...leftElements, ...rightElements];
 
     return items;
   }
+
+  getSharedElementsCarousel(leftRoute: string, currRoute: string, rightRoute: string): Array<TransitionItem> {
+    const leftElements = this._getItemPairs(leftRoute, currRoute)
+      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
+    const rightElements = this._getItemPairs(currRoute, rightRoute)
+      .filter(pair => pair.toItem !== undefined && pair.fromItem !== undefined);
+    const sharedElements = [...leftElements, ...rightElements];
+    return sharedElements;
+  }
+
   getTransitionElementsCarousel(routes = []): Array<TransitionItem> {
+    const sharedElements = this.getSharedElementsCarousel(...routes);
     const items = this._items.filter((item) => {
       let itemInRoutes = false;
       routes.forEach((route) => {
@@ -84,10 +95,11 @@ export default class TransitionItems {
           itemInRoutes = true;
         }
       });
-      return (item.appear !== undefined || item.disappear !== undefined) && itemInRoutes;
+      const index = _findIndex(sharedElements, (sharedElement) => {
+        return _isEqual(_get(sharedElement, 'fromItem'), item) || _isEqual(_get(sharedElement, 'toItem'), item);
+      })
+      return (item.appear !== undefined || item.disappear !== undefined) && itemInRoutes && index<0;
     });
-
-
     return items;
   }
 
